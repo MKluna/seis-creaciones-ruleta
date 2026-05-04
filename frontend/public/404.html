@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Seis Creaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:     #0d0b1e;
+      --bg-card:     #1a1535;
+      --bg-card2:    #231d47;
+      --gold:        #f5c842;
+      --pink:        #f72585;
+      --cyan:        #4cc9f0;
+      --purple:      #7b2fff;
+      --text:        #f0eeff;
+      --muted:       #9989cc;
+      --font-body:   "Nunito", ui-rounded, "Arial Rounded MT Bold", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-brand:  "Fredoka One", "Arial Rounded MT Bold", "Trebuchet MS", ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow: hidden;
+    }
+
+    /* ── Estrellas de fondo ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 55%, #7b2fff1a 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, #f725851a 0%, transparent 55%),
+        radial-gradient(ellipse at 55% 85%, #4cc9f01a 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* ── Canvas de partículas ── */
+    #stars { position: fixed; inset: 0; pointer-events: none; }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 24px 16px;
+      gap: 0;
+      text-align: center;
+    }
+
+    /* ── Bola gacha ── */
+    .gacha-ball {
+      position: relative;
+      width: clamp(120px, 30vw, 180px);
+      height: clamp(120px, 30vw, 180px);
+      margin-bottom: 32px;
+      animation: bounce 1.6s cubic-bezier(.36,.07,.19,.97) infinite;
+    }
+
+    .gacha-ball svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 24px #f5c84266) drop-shadow(0 0 48px #7b2fff44);
+      animation: spinBall 3s linear infinite;
+    }
+
+    @keyframes spinBall {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);   animation-timing-function: cubic-bezier(.8,0,1,1); }
+      50%       { transform: translateY(-28px); animation-timing-function: cubic-bezier(0,0,.2,1); }
+    }
+
+    /* Interrogación flotante sobre la bola */
+    .gacha-ball::after {
+      content: '?';
+      position: absolute;
+      top: -18px;
+      right: -10px;
+      font-family: var(--font-brand);
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      color: var(--gold);
+      text-shadow: 0 0 12px #f5c84288;
+      animation: floatQ 2s ease-in-out infinite;
+    }
+
+    @keyframes floatQ {
+      0%, 100% { transform: translateY(0) rotate(-8deg); }
+      50%       { transform: translateY(-10px) rotate(8deg); }
+    }
+
+    /* ── Texto japonés de sabor ── */
+    .jp-flavor {
+      font-family: var(--font-brand);
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      letter-spacing: 4px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* ── 404 grande ── */
+    .num-404 {
+      font-family: var(--font-brand);
+      font-size: clamp(5rem, 22vw, 9rem);
+      line-height: 1;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--pink) 60%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 32px #f5c84244);
+      margin-bottom: 4px;
+    }
+
+    /* ── Subtítulo ── */
+    .titulo {
+      font-family: var(--font-brand);
+      font-size: clamp(1.3rem, 4vw, 1.9rem);
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .desc {
+      color: var(--muted);
+      font-size: clamp(0.88rem, 2.5vw, 1rem);
+      font-weight: 600;
+      max-width: 340px;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    /* ── Botón volver ── */
+    .btn-home {
+      font-family: var(--font-brand);
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      letter-spacing: 1px;
+      padding: 14px 48px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 0 20px #f7258566, 0 0 40px #f7258533, 0 4px 24px #0005;
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    .btn-home:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 24px #f7258588, 0 0 48px #4cc9f066, 0 4px 24px #0005;
+    }
+
+    .btn-home:active {
+      transform: scale(0.97);
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.05); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.03); }
+      70%       { transform: scale(1); }
+    }
+
+    /* ── Shimmer ring decorativo ── */
+    .ring-deco {
+      position: fixed;
+      width: clamp(320px, 80vw, 600px);
+      height: clamp(320px, 80vw, 600px);
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: conic-gradient(
+        var(--gold), var(--pink), var(--cyan), var(--purple), var(--gold)
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      opacity: 0.12;
+      animation: spinRing 8s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    /* ── Marca ── */
+    .marca {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-brand);
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      background: linear-gradient(135deg, var(--gold), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+  <div class="ring-deco"></div>
+  <p class="marca">Seis Creaciones</p>
+
+  <main class="page">
+
+    <div class="gacha-ball">
+      <!-- Bola gacha SVG — mitad superior dorada, mitad inferior blanca, franja central negra -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="topHalf">
+            <rect x="0" y="0" width="100" height="50"/>
+          </clipPath>
+          <clipPath id="bottomHalf">
+            <rect x="0" y="50" width="100" height="50"/>
+          </clipPath>
+          <radialGradient id="gradTop" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#ffe566"/>
+            <stop offset="100%" stop-color="#c8960a"/>
+          </radialGradient>
+          <radialGradient id="gradBot" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#c8c0e0"/>
+          </radialGradient>
+          <filter id="innerShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="2" dy="2"/>
+            <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1"/>
+            <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.4 0"/>
+          </filter>
+        </defs>
+        <!-- Mitad superior dorada -->
+        <circle cx="50" cy="50" r="47" fill="url(#gradTop)" clip-path="url(#topHalf)"/>
+        <!-- Mitad inferior blanca -->
+        <circle cx="50" cy="50" r="47" fill="url(#gradBot)" clip-path="url(#bottomHalf)"/>
+        <!-- Franja central negra -->
+        <rect x="3" y="44" width="94" height="12" fill="#1a1535" rx="2"/>
+        <!-- Botón central -->
+        <circle cx="50" cy="50" r="11" fill="#231d47" stroke="#f5c842" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="7" fill="#f5c842" opacity="0.9"/>
+        <!-- Brillo especular -->
+        <ellipse cx="37" cy="32" rx="9" ry="6" fill="white" opacity="0.3" transform="rotate(-20,37,32)"/>
+        <!-- Borde exterior -->
+        <circle cx="50" cy="50" r="47" fill="none" stroke="#f5c84244" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <p class="jp-flavor">página no encontrada</p>
+    <div class="num-404">404</div>
+    <h1 class="titulo">¡Tiraste en vacío!</h1>
+    <p class="desc">
+      Esta página no existe en ninguna dimensión gacha conocida.
+      Intentá con otra URL o volvé al inicio para seguir jugando.
+    </p>
+
+    <a href="/" class="btn-home">← Volver al inicio</a>
+
+  </main>
+
+  <script>
+    // Partículas de estrellas flotantes
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    const COLORS = ['#f5c842', '#f72585', '#4cc9f0', '#7b2fff', '#ffffff'];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+      stars = Array.from({ length: 70 }, () => ({
+        x:    Math.random() * W,
+        y:    Math.random() * H,
+        r:    Math.random() * 1.8 + 0.4,
+        vx:   (Math.random() - 0.5) * 0.3,
+        vy:   (Math.random() - 0.5) * 0.3,
+        a:    Math.random(),
+        va:   (Math.random() - 0.5) * 0.012,
+        col:  COLORS[Math.floor(Math.random() * COLORS.length)],
+      }));
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      for (const s of stars) {
+        s.x  = (s.x + s.vx + W) % W;
+        s.y  = (s.y + s.vy + H) % H;
+        s.a  = Math.max(0.05, Math.min(1, s.a + s.va));
+        if (s.a <= 0.05 || s.a >= 1) s.va *= -1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.col;
+        ctx.globalAlpha = s.a * 0.7;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', () => { resize(); initStars(); });
+    resize();
+    initStars();
+    tick();
+  </script>
+</body>
+</html>
