@@ -230,10 +230,19 @@ function listarTodos() {
   `).all();
 }
 
+function eliminarTodos() {
+  return db.transaction(() => {
+    const result = db.prepare('DELETE FROM participantes').run();
+    db.prepare("DELETE FROM sqlite_sequence WHERE name = 'participantes'").run();
+    return result.changes;
+  })();
+}
+
 module.exports = {
   participacionReciente,
   deviceSospechoso,
   registrar,
   listarTodos,
+  eliminarTodos,
   DB_FILE,
 };

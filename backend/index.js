@@ -26,8 +26,8 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'x-csrf-token'],
+  methods: ['GET', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'x-csrf-token', 'x-admin-key'],
 }));
 app.use(express.json({ limit: '10kb' }));
 app.use(limiterGeneral);
@@ -96,13 +96,26 @@ app.post(
   }
 );
 
-// Lista de participantes (protegida con rate limit anti fuerza bruta)
-app.get('/api/participantes', limiterAdmin, (req, res) => {
+function validarAdmin(req, res, next) {
   const key = req.headers['x-admin-key'];
   if (key !== process.env.ADMIN_KEY) {
     return res.status(403).json({ error: 'Acceso denegado.' });
   }
+  next();
+}
+
+// Lista de participantes (protegida con rate limit anti fuerza bruta)
+app.get('/api/participantes', limiterAdmin, validarAdmin, (req, res) => {
   res.json(db.listarTodos());
+});
+
+app.delete('/api/participantes', limiterAdmin, validarAdmin, (req, res) => {
+  if (req.query.confirm !== 'limpiar') {
+    return res.status(400).json({ error: 'Confirmacion requerida.' });
+  }
+
+  const eliminados = db.eliminarTodos();
+  res.json({ ok: true, eliminados });
 });
 
 app.listen(PORT, () => {
