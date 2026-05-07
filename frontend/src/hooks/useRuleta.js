@@ -10,15 +10,19 @@ export function useRuleta() {
   const [girando, setGirando]           = useState(false);
   const [resultado, setResultado]       = useState(null);
   const [error, setError]               = useState(null);
+  const [estadoRuleta, setEstadoRuleta] = useState({ habilitada: true, mensaje: null });
 
   useEffect(() => {
     // Carga premios públicos (sin probabilidades) y token CSRF en paralelo
     Promise.all([
       fetch(`${API}/premios`).then(r => r.json()),
       fetch(`${API}/csrf-token`).then(r => r.json()),
-    ]).then(([p, { token }]) => {
+      fetch(`${API}/estado-ruleta`).then(r => r.json()),
+    ]).then(([p, { token }, estado]) => {
       setPremios(p);
       setCsrfToken(token);
+      setEstadoRuleta(estado);
+      if (!estado.habilitada) setError(estado.mensaje);
     }).catch(() => setError('No se pudo conectar al servidor.'));
 
     // Fingerprint del dispositivo
@@ -29,7 +33,7 @@ export function useRuleta() {
   }, []);
 
   async function participar({ nombre, telefono, tiempoFormulario, honeypot }) {
-    if (girando) return;
+    if (girando || !estadoRuleta.habilitada) return;
     setGirando(true);
     setError(null);
 
@@ -75,5 +79,5 @@ export function useRuleta() {
     setGirando(false);
   }
 
-  return { premios, girando, setGirando, resultado, error, participar, resetear };
+  return { premios, girando, setGirando, resultado, error, estadoRuleta, participar, resetear };
 }

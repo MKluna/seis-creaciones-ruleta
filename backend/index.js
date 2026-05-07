@@ -13,6 +13,7 @@ const {
 } = require('./middleware/rateLimit');
 const { generarToken, validarToken, validarFormulario, validarDatos } = require('./middleware/antiBot');
 const { girar, getPremiosPublicos } = require('./ruleta');
+const { estadoRuleta, validarVentanaRuleta } = require('./ventanaRuleta');
 const db       = require('./db');
 const telegram = require('./telegram');
 
@@ -44,6 +45,10 @@ app.get('/api/premios', (req, res) => {
   res.json(getPremiosPublicos());
 });
 
+app.get('/api/estado-ruleta', (req, res) => {
+  res.json(estadoRuleta());
+});
+
 // Middleware: devuelve el premio anterior sin consumir el rate limit
 function checkYaParticipo(req, res, next) {
   const anterior = db.participacionReciente(req.body.telefono);
@@ -61,6 +66,7 @@ function checkYaParticipo(req, res, next) {
 // Participación
 app.post(
   '/api/participar',
+  validarVentanaRuleta,
   validarToken,
   validarFormulario,
   validarDatos,

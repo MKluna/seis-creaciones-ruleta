@@ -14,7 +14,16 @@ export default function App() {
   const [mostrarResultado, setMostrarResultado]   = useState(false);
   const [muted, setMuted] = useState(true); // arranca sin sonido, usuario activa
 
-  const { premios, girando, setGirando, resultado, error, participar, resetear } = useRuleta();
+  const {
+    premios,
+    girando,
+    setGirando,
+    resultado,
+    error,
+    estadoRuleta,
+    participar,
+    resetear,
+  } = useRuleta();
 
   // Arranca la música en el primer click en GIRAR (no en el botón mute)
   function iniciarAudio() {
@@ -32,7 +41,7 @@ export default function App() {
   }
 
   async function handleGirar() {
-    if (girando || !premios.length) return;
+    if (girando || !premios.length || !estadoRuleta.habilitada) return;
     iniciarAudio(); // aquí sí arranca la música si no está muteado
     setMostrarFormulario(true);
   }
@@ -94,7 +103,7 @@ export default function App() {
         <BtnGirarParticulas
           className="btn-girar"
           onClick={handleGirar}
-          disabled={girando || !premios.length}
+          disabled={girando || !premios.length || !estadoRuleta.habilitada}
         >
           {girando ? '¡Girando…!' : '🎰 ¡GIRAR!'}
         </BtnGirarParticulas>
