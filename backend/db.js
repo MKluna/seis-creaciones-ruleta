@@ -238,11 +238,46 @@ function eliminarTodos() {
   })();
 }
 
+function eliminarSinPremioEntre(inicioIso, finIso) {
+  return db.transaction(() => {
+    const params = { inicioIso, finIso };
+    const totalSinPremio = db.prepare(`
+      SELECT COUNT(*) AS total
+      FROM participantes
+      WHERE premio_id = 'sin_premio'
+        AND fecha_giro >= @inicioIso
+        AND fecha_giro < @finIso
+    `).get(params).total;
+
+    const totalGanadores = db.prepare(`
+      SELECT COUNT(*) AS total
+      FROM participantes
+      WHERE premio_id <> 'sin_premio'
+        AND fecha_giro >= @inicioIso
+        AND fecha_giro < @finIso
+    `).get(params).total;
+
+    const result = db.prepare(`
+      DELETE FROM participantes
+      WHERE premio_id = 'sin_premio'
+        AND fecha_giro >= @inicioIso
+        AND fecha_giro < @finIso
+    `).run(params);
+
+    return {
+      eliminados: result.changes,
+      candidatos: totalSinPremio,
+      conservadosGanadores: totalGanadores,
+    };
+  })();
+}
+
 module.exports = {
   participacionReciente,
   deviceSospechoso,
   registrar,
   listarTodos,
   eliminarTodos,
+  eliminarSinPremioEntre,
   DB_FILE,
 };

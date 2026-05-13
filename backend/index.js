@@ -13,7 +13,7 @@ const {
 } = require('./middleware/rateLimit');
 const { generarToken, validarToken, validarFormulario, validarDatos } = require('./middleware/antiBot');
 const { girar, getPremiosPublicos } = require('./ruleta');
-const { estadoRuleta, validarVentanaRuleta } = require('./ventanaRuleta');
+const { estadoRuleta, obtenerRangoViernesPasado, validarVentanaRuleta } = require('./ventanaRuleta');
 const db       = require('./db');
 const telegram = require('./telegram');
 
@@ -122,6 +122,23 @@ app.delete('/api/participantes', limiterAdmin, validarAdmin, (req, res) => {
 
   const eliminados = db.eliminarTodos();
   res.json({ ok: true, eliminados });
+});
+
+app.delete('/api/participantes/sin-premio-viernes-pasado', limiterAdmin, validarAdmin, (req, res) => {
+  if (req.query.confirm !== 'limpiar') {
+    return res.status(400).json({ error: 'Confirmacion requerida.' });
+  }
+
+  const rango = obtenerRangoViernesPasado();
+  const resultado = db.eliminarSinPremioEntre(rango.inicioIso, rango.finIso);
+  res.json({
+    ok: true,
+    fecha: rango.fecha,
+    inicio: rango.inicioIso,
+    fin: rango.finIso,
+    timeZone: rango.timeZone,
+    ...resultado,
+  });
 });
 
 app.listen(PORT, () => {

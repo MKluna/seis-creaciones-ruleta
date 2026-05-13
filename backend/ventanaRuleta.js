@@ -49,6 +49,27 @@ function estadoRuleta(fecha = new Date()) {
   };
 }
 
+function obtenerRangoViernesPasado(fecha = new Date()) {
+  const partes = partesFecha(fecha);
+  const diasDesdeViernes = ((partes.weekday - VIERNES + 7) % 7) || 7;
+  const fechaLocalUtc = Date.UTC(partes.year, partes.month - 1, partes.day);
+  const viernesLocalUtc = new Date(fechaLocalUtc - diasDesdeViernes * 24 * 60 * 60 * 1000);
+  const year = viernesLocalUtc.getUTCFullYear();
+  const month = viernesLocalUtc.getUTCMonth();
+  const day = viernesLocalUtc.getUTCDate();
+
+  // Argentina no usa DST actualmente: 00:00 America/Argentina/Buenos_Aires = 03:00 UTC.
+  const inicio = new Date(Date.UTC(year, month, day, 3, 0, 0, 0));
+  const fin = new Date(inicio.getTime() + 24 * 60 * 60 * 1000);
+
+  return {
+    fecha: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+    inicioIso: inicio.toISOString(),
+    finIso: fin.toISOString(),
+    timeZone: TIME_ZONE,
+  };
+}
+
 function validarVentanaRuleta(req, res, next) {
   const estado = estadoRuleta();
   if (!estado.habilitada) {
@@ -57,4 +78,4 @@ function validarVentanaRuleta(req, res, next) {
   next();
 }
 
-module.exports = { estadoRuleta, validarVentanaRuleta };
+module.exports = { estadoRuleta, obtenerRangoViernesPasado, validarVentanaRuleta };
