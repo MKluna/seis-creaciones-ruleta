@@ -77,6 +77,12 @@ app.post(
     const { nombre, telefono, deviceFingerprint } = req.body;
     const ip = req.ip;
 
+    if (db.dispositivoEIpBloqueados(deviceFingerprint, ip)) {
+      return res.status(429).json({
+        error: 'Detectamos demasiadas participaciones desde este dispositivo. Intenta mas tarde.',
+      });
+    }
+
     const esBotSospechoso = req.esBotSospechoso || db.deviceSospechoso(deviceFingerprint);
 
     // Calcula resultado server-side (nunca en el frontend)

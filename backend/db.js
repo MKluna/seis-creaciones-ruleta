@@ -182,6 +182,21 @@ function deviceSospechoso(fingerprint) {
   return Number(row?.total ?? 0) >= 5;
 }
 
+function dispositivoEIpBloqueados(fingerprint, ip) {
+  if (!fingerprint || !ip) return false;
+  const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  const row = db.prepare(`
+    SELECT COUNT(*) AS total
+    FROM participantes
+    WHERE device_fingerprint = ?
+      AND ip = ?
+      AND fecha_giro >= ?
+  `).get(fingerprint, ip, hace24hs);
+
+  return Number(row?.total ?? 0) >= 5;
+}
+
 function registrar({ nombre, telefono, premio, ip, device_fingerprint, es_bot_sospechoso }) {
   const fechaGiro = new Date().toISOString();
 
@@ -275,6 +290,7 @@ function eliminarSinPremioEntre(inicioIso, finIso) {
 module.exports = {
   participacionReciente,
   deviceSospechoso,
+  dispositivoEIpBloqueados,
   registrar,
   listarTodos,
   eliminarTodos,
